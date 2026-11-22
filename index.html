@@ -802,9 +802,6 @@ function drawSkyline(){
   place(F,P,Math.round(P.length*Math.max(.6,PSC)));
   F.tw=new Uint8Array(N); for(let i=0;i<N;i++) if(F.c[i]===1&&F.y[i]>UY(140)) F.tw[i]=1;   // gold room lights twinkle
   F.labels=[{x:UX(380),y:UY(40),ar:'برج الساعة',arS:'برج الساعة',en:'',clock:1,side:-1,fit:1}];
-  // tower names (Abraj Al-Bait), drawn as small tags above each spire
-  F.tags=[[69,300,'الصفا','SAFA'],[135,250,'المروة','MARWAH'],[201,330,'هاجر','HAJAR'],[556,320,'زمزم','ZAMZAM'],[622,265,'المقام','MAQAM'],[692,300,'القبلة','QIBLA']]
-    .map(([x,h,ar,en])=>({x:UX(x),y:UY(520-h-20),ar,en}));
   return F;
 }
 
