@@ -851,102 +851,103 @@ function drawMataf(){
   return F;
 }
 
-/* ---------- Madinah: Al-Masjid an-Nabawi seen from the south plaza ---------- */
-/* long low two-level arcade with a cream-and-stone band and crenellated parapet; three projecting gate porticos with a small
-   dome each; seven evenly spaced Nabawi minarets (square base as high as the facade, octagonal and cylindrical shafts, top
-   tier, a balcony on each, onion cap, gold crescent), the two flanking the Green Dome slightly taller; the Green Dome =
-   rounded, lightly ribbed hemisphere on a short octagonal drum with a lantern and crescent, off-centre right, silver dome
-   beside it; a continuous band of open square umbrellas in the courtyard in front, standing on the plaza */
+/* ---------- Madinah: Al-Masjid an-Nabawi from the south-west plaza (owner reference photo) ---------- */
+/* coordinates are written in the reference photo pixels (1181 x 700) and mapped to the 800 x 600 canvas:
+   white arcade wing + long stone facade with rosettes and gates, silver dome, Green Dome on its drum, three minarets
+   (green-capped, slender, tall patterned), bronze lamp posts with lanterns standing on the plaza in front */
 function drawMadinah(){
-  const c=mk(), g=c.getContext('2d'), GY=505, ROOF=392, X0=50, X1=750, TAU=Math.PI*2, P=[];
-  const UG=530, UT=460, UA=488, UW=48, DX=575, SX2=478;
-  const MIN=[50,167,283,400,517,633,750], TALL=[517,633], GATES=[225,342,692];
-  const UMB=[]; for(let k=0;k<8;k++) UMB.push(78+k*92);
-  // canopy occlusion: facade points hidden behind an umbrella canopy (between its top edge and its apex) are dropped
-  const hid=(x,y)=>y>UT-1&&y<UA+1&&UMB.some(u=>Math.abs(x-u)<UW*(1-(y-UT)/(UA-UT))+1.5);
-  const push=(M,z)=>{for(const p of M) if(!hid(p[0],p[1])) P.push(p);};
-  layerOn(g,'#8a8a8a',null,x=>{x.fillRect(X0,ROOF,X1-X0,GY-ROOF);});
-  GATES.forEach(gx=>layerOn(g,'#bdbdbd',null,x=>x.fillRect(gx-30,ROOF-22,60,GY-ROOF+22)));
-  g.fillStyle='#4a4a4a'; g.fillRect(20,UG+2,760,1.3);
+  const c=mk(), g=c.getContext('2d'), TAU=Math.PI*2, K=.62;
+  const tx=x=>(x-590)*K+400, ty=y=>y*K+75, ix=X=>(X-400)/K+590, iy=Y=>(Y-75)/K;
+  const B=[], LP=[];
+  const L=(A,x0,y0,x1,y1,z,b,cl,st)=>pLine(A,tx(x0),ty(y0),tx(x1),ty(y1),st||1.6,z,b,cl||0);
+  const Ar=(A,x,y,rx,ry,a0,a1,z,b,cl,st)=>pArc(A,tx(x),ty(y),rx*K,ry*K,a0,a1,st||1.4,z,b,cl||0);
+  const Rc=(A,x0,y0,x1,y1,z,b,cl,st)=>pRect(A,tx(x0),ty(y0),tx(x1),ty(y1),st||1.6,z,b,cl||0);
+  const Fi=(A,x0,y0,x1,y1,st,z,b,cl,ok)=>pFill(A,tx(x0),ty(y0),tx(x1),ty(y1),st,z,b,cl||0,ok?(X,Y)=>ok(ix(X),iy(Y)):null);
+  // silhouettes (sparse fill only)
+  layerOn(g,'#8a8a8a',null,x=>{const r=(a,b,c2,d)=>x.fillRect(tx(a),ty(b),(c2-a)*K,(d-b)*K);
+    r(180,585,505,690); r(250,545,505,690); r(500,500,1045,690); r(1040,495,1140,690); r(585,470,760,500);});
+  layerOn(g,'#3d9a55',null,x=>{x.beginPath(); x.ellipse(tx(662),ty(442),78*K,105*K,0,Math.PI,TAU); x.fill(); x.fillRect(tx(588),ty(440),150*K,30*K);});
+  layerOn(g,'#d0d0d0',null,x=>{x.beginPath(); x.ellipse(tx(447),ty(505),47*K,62*K,0,Math.PI,TAU); x.fill();});
+  g.fillStyle='#4a4a4a'; g.fillRect(0,ty(705)+1,800,1.3);
   const F=sampleCanvas(c,(px,py,r,gg,b,lum)=>{
-    if(py>GY+1) return .14+(R()-.5)*.03;
-    if(lum>.7) return -.04+(R()-.5)*.02;
+    if(py>ty(700)) return .14+(R()-.5)*.03;
     return -.1+(R()-.5)*.03;
   },{fill:.05});
-  const ZF=-.08, M=[];
-  // parapet: merlons with pointed tips, gold cornice, cream-and-stone band, string course, base
-  for(let x=X0+3;x<X1-3;x+=10){pLine(M,x,ROOF-1,x,ROOF-7,1.5,ZF,.75,0); pLine(M,x+5,ROOF-1,x+5,ROOF-7,1.5,ZF,.75,0); pLine(M,x,ROOF-7,x+2.5,ROOF-10,1.2,ZF,.85,0); pLine(M,x+5,ROOF-7,x+2.5,ROOF-10,1.2,ZF,.85,0);}
-  pLine(M,X0,ROOF,X1,ROOF,1.5,ZF,1,0); pLine(M,X0,ROOF+5,X1,ROOF+5,1.8,ZF,.95,1);
-  pLine(M,X0,ROOF+10,X1,ROOF+10,2.6,ZF,.5,0); for(let x=X0+4;x<X1;x+=12) pLine(M,x,ROOF+12,x+6,ROOF+12,1.6,ZF,.6,1);
-  pLine(M,X0,448,X1,448,2,ZF,.7,0); pLine(M,X0,452,X1,452,3,ZF,.45,1); pLine(M,X0,GY,X1,GY,1.8,ZF,.8,0);
-  pLine(M,X0,ROOF,X0,GY,1.8,ZF,.9,0); pLine(M,X1,ROOF,X1,GY,1.8,ZF,.9,0);
-  // two-level arcade, skipping the minaret piers and the gate porticos
-  for(let bx=X0+20;bx<X1-12;bx+=29){
-    if(MIN.some(m=>Math.abs(bx-m)<19)||GATES.some(q=>Math.abs(bx-q)<40)) continue;
-    const uw=7, us=428; pLine(M,bx-uw,446,bx-uw,us,1.7,ZF,.75,0); pLine(M,bx+uw,446,bx+uw,us,1.7,ZF,.75,0); pArc(M,bx,us,uw,uw,Math.PI,TAU,1.4,ZF,.88,0);
-    const lw=10, ls=475; pLine(M,bx-lw,GY,bx-lw,ls,1.7,ZF,.85,0); pLine(M,bx+lw,GY,bx+lw,ls,1.7,ZF,.85,0); pArc(M,bx,ls,lw,lw,Math.PI,TAU,1.5,ZF,.95,0);
-  }
-  // gate porticos: projecting block above the parapet, crenellated top, tall arched opening, gold band, small dome
-  GATES.forEach(q=>{const z=ZF+.04, t=ROOF-22;
-    pLine(M,q-30,t,q+30,t,1.5,z,1,0); pLine(M,q-30,t,q-30,GY,1.8,z,.95,0); pLine(M,q+30,t,q+30,GY,1.8,z,.95,0);
-    for(let x=q-28;x<q+28;x+=8) pLine(M,x,t-6,x+4,t-6,1.3,z,.9,0);
-    pLine(M,q-30,t+9,q+30,t+9,1.6,z,1,1);
-    pLine(M,q-18,GY,q-18,432,1.6,z,1,0); pLine(M,q+18,GY,q+18,432,1.6,z,1,0); pArc(M,q,432,18,22,Math.PI,TAU,1.3,z,1,0); pArc(M,q,432,13,16,Math.PI,TAU,1.7,z,.55,1);
-    const db=t-7; pArc(M,q,db,13,13,Math.PI,TAU,1.3,z,.95,0); pFill(M,q-11,db-11,q+11,db-2,3,z,.3,0,(x,y)=>(x-q)**2+(y-db)**2<121);
-    pLine(M,q,db-13,q,db-20,1,z,1,1); pArc(M,q,db-22,2.4,2.4,-.25,Math.PI+.25,.9,z,1,1);});
-  push(M);
-  // Nabawi minaret: 4 tiers, each with a projecting balcony, onion cap, gold crescent
-  const minaret=(mx,top,z)=>{
-    const Mi=[], H=ROOF-top, A=ROOF-H*.47, Bq=ROOF-H*.75, Cq=ROOF-H*.87, Dq=ROOF-H*.93;
-    const shaft=(hw,y0,y1,b)=>{for(const s of [-1,1]) pLine(Mi,mx+s*hw,y0,mx+s*hw,y1,2.1,z,b,0);};
-    const balcony=(yy,hw)=>{pLine(Mi,mx-hw,yy,mx+hw,yy,1.4,z+.01,1,0); pLine(Mi,mx-hw,yy-4,mx+hw,yy-4,1.8,z+.01,.6,0);
-      pLine(Mi,mx-hw,yy,mx-hw,yy-4,1.5,z+.01,.8,0); pLine(Mi,mx+hw,yy,mx+hw,yy-4,1.5,z+.01,.8,0);
-      for(const s of [-1,1]) pLine(Mi,mx+s*hw,yy,mx+s*(hw-5),yy+5,1.3,z,.55,0);};
-    shaft(11,GY,ROOF,.95); for(let yy=GY-28;yy>ROOF+8;yy-=28) pLine(Mi,mx-11,yy,mx+11,yy,2.2,z,.45,0);           // square base
-    balcony(ROOF-2,17);
-    shaft(8.5,ROOF-6,A,.9); shaft(3.5,ROOF-10,A+6,.4);                                                          // octagonal
-    for(let yy=ROOF-30;yy>A+10;yy-=34) pArc(Mi,mx,yy,4,6,Math.PI,TAU,1.4,z,.5,0);
-    balcony(A,14);
-    shaft(6.5,A-4,Bq,.9);                                                                                       // cylindrical
-    balcony(Bq,11);
-    shaft(4.5,Bq-4,Cq,.9); balcony(Cq,8);                                                                       // top tier
-    const cb=Cq-4, ch=cb-Dq+10;                                                                                 // onion cap
-    for(let k=0;k<=22;k++){const u=k/22, r=u<.42?4.5+3.5*Math.sin(u/.42*Math.PI/2):8*Math.pow(Math.cos((u-.42)/.58*Math.PI/2),1.25), yy=cb-u*ch;
-      Mi.push([mx-r,yy,z,.95,0]); Mi.push([mx+r,yy,z,.95,0]);}
-    const tip=cb-ch; pLine(Mi,mx,tip,mx,tip-8,1,z+.01,1,1); pArc(Mi,mx,tip-12,3.4,3.4,-.25,Math.PI+.25,.9,z+.01,1,1); Mi.push([mx,tip-8.5,z+.01,1,1]);
-    push(Mi);
-  };
-  MIN.forEach((m,k)=>minaret(m,TALL.includes(m)?84:102,k%2?-.05:-.01));
-  // the Green Dome: square base, short octagonal drum, rounded lightly ribbed hemisphere, lantern, crescent finial
-  const ZD=-.13, DR=55, DH=58, DB=ROOF-34, rr=s=>DR*Math.sqrt(Math.max(0,1-s*s));
-  pFill(P,DX-60,ROOF-16,DX+60,ROOF-6,3,ZD,.4,3); pRect(P,DX-60,ROOF-16,DX+60,ROOF-5,1.8,ZD,.9,3);
-  pFill(P,DX-53,DB+2,DX+53,ROOF-17,3,ZD,.45,3); pLine(P,DX-53,DB,DX-53,ROOF-16,1.6,ZD,.95,3); pLine(P,DX+53,DB,DX+53,ROOF-16,1.6,ZD,.95,3);
-  for(const fx of [-.38,.38]) pLine(P,DX+fx*53,DB+2,DX+fx*53,ROOF-17,2,ZD+.01,.9,3);
-  for(const fx of [-.7,0,.7]) pArc(P,DX+fx*53,DB+11,3.2,4.5,Math.PI,TAU,1.2,ZD+.01,.7,1);
-  pLine(P,DX-56,DB,DX+56,DB,1.4,ZD+.01,1,1); pLine(P,DX-56,ROOF-16,DX+56,ROOF-16,1.6,ZD+.01,.9,1);
-  for(let yy=DB-1.5;yy>DB-DH+1;yy-=2.6){const s=(DB-yy)/DH, r=rr(s);
-    for(let x=DX-r+1.5;x<=DX+r-1.5;x+=3){const hl=Math.max(0,1-((x-(DX-18))**2+(yy-(DB-34))**2)/1200);
-      P.push([x,yy,ZD+.12*Math.sqrt(Math.max(0,1-((x-DX)/r)**2)),.45+.45*hl,3]);}}
-  for(let k=0;k<=120;k++){const th=k/120*Math.PI; P.push([DX-Math.cos(th)*DR,DB-Math.sin(th)*DH,ZD+.01,1,3]);}
-  for(const ph of [-.9,-.6,-.3,0,.3,.6,.9]) for(let k=2;k<=34;k++){const s=k/36; P.push([DX+rr(s)*Math.sin(ph),DB-s*DH,ZD+.1,.7,3]);}
-  const QG=mulberry(9); for(let k=0;k<16;k++){const s=QG()*.8, r=rr(s); P.push([DX+(QG()*2-1)*r*.8,DB-s*DH,ZD+.13,.85,1]);}
-  const LT=DB-DH; pRect(P,DX-5,LT-9,DX+5,LT,1.3,ZD+.02,1,3); pArc(P,DX,LT-9,5,4,Math.PI,TAU,1,ZD+.02,1,3);
-  pLine(P,DX,LT-13,DX,LT-21,1,ZD+.02,1,1); pArc(P,DX,LT-26,4.6,4.6,-.25,Math.PI+.25,.9,ZD+.02,1,1); pArc(P,DX,LT-28.4,3.9,3.9,.2,Math.PI-.2,1,ZD+.02,.85,1);
-  // silver dome (small, west of the Green Dome)
-  for(let k=0;k<=60;k++){const th=k/60*Math.PI; P.push([SX2-Math.cos(th)*16,ROOF-8-Math.sin(th)*15,ZD,.8,0]);}
-  pFill(P,SX2-14,ROOF-21,SX2+14,ROOF-10,3,ZD,.3,0,(x,y)=>((x-SX2)/15)**2+((y-ROOF+8)/14)**2<1);
-  pLine(P,SX2-18,ROOF-8,SX2+18,ROOF-8,1.6,ZD,.8,0); pLine(P,SX2,ROOF-23,SX2,ROOF-31,1,ZD,1,1); P.push([SX2,ROOF-33,ZD,1,1]);
-  // courtyard umbrellas: open square inverted-pyramid canopies, edges touching in one band, thick masts on the plaza
-  const ZU=.2;
-  UMB.forEach(ux=>{
-    pLine(P,ux-UW,UT,ux+UW,UT,1.4,ZU,1,0); pLine(P,ux-UW+2,UT+2.5,ux+UW-2,UT+2.5,2.4,ZU,.45,0);
-    for(const f of [-1,-1/3,1/3,1]) pLine(P,ux+f*UW,UT,ux,UA,1.6,ZU,f*f>.5?.95:.6,0);
-    for(let yy=UT+5;yy<UA-2;yy+=4){const hw=UW*(1-(yy-UT)/(UA-UT)); for(let x=ux-hw+3;x<ux+hw-2;x+=5) P.push([x,yy,ZU-.01,.22,0]);}
-    pLine(P,ux-2.4,UA,ux-2.4,UG,1.6,ZU,.85,0); pLine(P,ux+2.4,UA,ux+2.4,UG,1.6,ZU,.85,0); pLine(P,ux-7,UG,ux+7,UG,1.5,ZU,.8,0);
-    P.push([ux,UA-1,ZU+.01,1,1]); pLine(P,ux,UT-1,ux,UT-7,1.2,ZU,.9,0); P.push([ux,UT-8.5,ZU,1,1]);});
+  const ZW=-.06, ZB=-.1;
+  // left white arcade wing: cornice, row of small arches, big arched gate
+  L(B,180,585,505,585,ZW,.95); L(B,180,598,505,598,ZW,.55); L(B,180,585,180,690,ZW,.85); L(B,180,690,505,690,ZW,.7);
+  for(let x=196;x<=420;x+=21){L(B,x-6,690,x-6,628,ZW,.75); L(B,x+6,690,x+6,628,ZW,.75); Ar(B,x,628,6,7,Math.PI,TAU,ZW,.85);}
+  Rc(B,428,592,484,690,ZW+.01,.9); L(B,440,690,440,632,ZW+.01,.85); L(B,474,690,474,632,ZW+.01,.85); Ar(B,457,632,17,22,Math.PI,TAU,ZW+.01,.95);
+  Fi(B,442,612,472,630,4,ZW,.35,1,(x,y)=>(x-457)**2/289+(y-632)**2/484<1);
+  // back wall of the wing
+  L(B,250,545,505,545,ZB,.6); L(B,250,545,250,585,ZB,.5); for(let x=300;x<500;x+=26) Rc(B,x,556,x+6,568,ZB,.45);
+  // main stone facade: crenellated cornice, bands, rosettes, gates
+  for(let x=505;x<1040;x+=9) L(B,x,500,x,494,ZB,.7,1,1.4);
+  L(B,500,500,1045,500,ZB,1,1); L(B,505,520,1040,520,ZB,.6); L(B,505,560,1040,560,ZB,.45); L(B,505,598,1040,598,ZB,.7,1); L(B,505,690,1040,690,ZB,.8);
+  L(B,505,500,505,690,ZB,.8); L(B,1040,495,1040,690,ZB,.8);
+  [575,612,650,688,728,870,905].forEach(x=>{Ar(B,x,580,11,11,0,TAU,ZB+.01,.95,1,1.3); Ar(B,x,580,5,5,0,TAU,ZB+.01,.6,1,1.3);});
+  [[642,600,684],[750,610,790],[1015,600,1045]].forEach(([q,top,r])=>{const l=2*q-r; Rc(B,l,top,r,690,ZB+.02,.95,1); Rc(B,l+10,top+28,r-10,690,ZB+.02,.6); L(B,l,top+12,r,top+12,ZB+.02,.7,1);});
+  for(let x=525;x<1030;x+=34) if(!(x>590&&x<700)&&!(x>700&&x<800)&&!(x>975)) Rc(B,x,612,x+12,640,ZB,.35);
+  // right wing with arched gate and small corner turret
+  L(B,1040,495,1140,495,ZB,.85); L(B,1140,495,1140,690,ZB,.8); Rc(B,1092,560,1130,690,ZB+.01,.85); Ar(B,1111,585,19,24,Math.PI,TAU,ZB+.01,.95,3);
+  L(B,1016,500,1016,478,ZB,.7); L(B,1024,500,1024,478,ZB,.7); L(B,1016,478,1020,468,ZB,.9); L(B,1024,478,1020,468,ZB,.9);
+  // silver dome (west), drum and finial
+  for(let k=0;k<=70;k++){const th=k/70*Math.PI, s=Math.sin(th); B.push([tx(447-Math.cos(th)*47),ty(505-Math.pow(s,.85)*62),ZB+.03,.95,0]);}
+  Fi(B,405,452,489,503,4,ZB+.03,.4,0,(x,y)=>((x-447)/45)**2+((y-505)/60)**2<1);
+  L(B,398,505,496,505,ZB+.03,.85); L(B,447,443,447,425,ZB+.03,1,1,1); Ar(B,447,420,4,4,0,TAU,ZB+.03,1,1,1);
+  // the Green Dome: white base, green window drum, ribbed bulbous dome, finial with crescent
+  const ZD=-.13, DX=662, DB=440, DR=78, DH=105;
+  Rc(B,582,470,762,500,ZD,.9); L(B,575,470,770,470,ZD,1,1);
+  Rc(B,588,440,738,470,ZD,.95,3); for(let x=600;x<=728;x+=16){L(B,x-3,465,x-3,452,ZD+.01,.6,3); L(B,x+3,465,x+3,452,ZD+.01,.6,3); Ar(B,x,452,3,4,Math.PI,TAU,ZD+.01,.7,3,1);}
+  L(B,582,440,742,440,ZD+.01,1,3);
+  const dr=s=>DR*Math.pow(Math.max(0,1-s*s),.5)*(1+.06*Math.sin(Math.min(1,s*1.6)*Math.PI));
+  for(let k=0;k<=130;k++){const s=k/130, r=dr(s); B.push([tx(DX-r),ty(DB-s*DH),ZD+.02,1,3]); B.push([tx(DX+r),ty(DB-s*DH),ZD+.02,1,3]);}
+  for(const ph of [-.95,-.65,-.33,0,.33,.65,.95]) for(let k=2;k<=60;k++){const s=k/64; B.push([tx(DX+dr(s)*Math.sin(ph*1.3)*.82),ty(DB-s*DH),ZD+.1,.75,3]);}
+  for(let y=DB-3;y>DB-DH+4;y-=4.5){const s=(DB-y)/DH, r=dr(s); for(let x=DX-r+4;x<DX+r-3;x+=5){const hl=Math.max(0,1-((x-(DX-25))**2+(y-(DB-62))**2)/2600); B.push([tx(x),ty(y),ZD+.08,.38+.5*hl,3]);}}
+  L(B,DX,DB-DH,DX,DB-DH-22,ZD+.02,1,1,1); Ar(B,DX,DB-DH-26,3.5,3.5,0,TAU,ZD+.02,1,1,1); Ar(B,DX,DB-DH-36,8,8,-.3,Math.PI+.3,ZD+.02,1,1,1);
+  // minarets
+  const tier=(A,x,y0,y1,w,z,b,cl)=>{L(A,x-w/2,y0,x-w/2,y1,z,b,cl); L(A,x+w/2,y0,x+w/2,y1,z,b,cl);};
+  const bal=(A,x,y,w,h,z)=>{L(A,x-w/2,y,x+w/2,y,z+.01,1); L(A,x-w/2,y+h,x+w/2,y+h,z+.01,.75); L(A,x-w/2,y,x-w/2,y+h,z+.01,.8); L(A,x+w/2,y,x+w/2,y+h,z+.01,.8);
+    for(let xx=x-w/2+5;xx<x+w/2-3;xx+=6) L(A,xx,y+2,xx,y+h-2,z+.01,.4,0,1.5); for(const s of [-1,1]) L(A,x+s*w/2,y+h,x+s*w/4,y+h+10,z,.55);};
+  // 1) green-capped minaret (left)
+  {const x=285, z=-.04;
+    L(B,x,190,x-13,315,z,1,3); L(B,x,190,x+13,315,z,1,3); Fi(B,x-11,215,x+11,313,4,z,.6,3,(xx,y)=>Math.abs(xx-x)<(y-190)/125*13-1);
+    L(B,x,190,x,175,z,1,1,1); Ar(B,x,170,4,4,0,TAU,z,1,1,1);
+    tier(B,x,315,355,24,z,.9); bal(B,x,355,48,22,z); tier(B,x,377,420,26,z,.9); bal(B,x,420,58,20,z);
+    tier(B,x,440,555,40,z,.95); for(let y=460;y<550;y+=24) Ar(B,x,y,8,10,Math.PI,TAU,z,.5);}
+  // 2) slender minaret (middle)
+  {const x=412, z=-.07;
+    L(B,x,95,x,128,z,1,1,1); L(B,x-8,175,x,128,z,.95); L(B,x+8,175,x,128,z,.95);
+    tier(B,x,175,280,22,z,.95); for(let y=195;y<275;y+=16) L(B,x-11,y,x+11,y,z,.35); Ar(B,x,240,5,10,Math.PI,TAU,z,.6);
+    bal(B,x,280,40,18,z); tier(B,x,298,372,26,z,.9); for(let y=305;y<368;y+=6) L(B,x-12,y,x+12,y-3,z,.3);
+    bal(B,x,372,46,20,z); tier(B,x,392,445,30,z,.9); Ar(B,x,420,6,12,Math.PI,TAU,z,.6); tier(B,x,445,505,34,z,.85);}
+  // 3) tall white minaret with zig-zag band (behind, left of the Green Dome)
+  {const x=530, z=-.11;
+    L(B,x,0,x,22,z,1,1,1); for(let k=0;k<=24;k++){const u=k/24, r=u<.5?9+6*Math.sin(u*Math.PI):15*Math.cos((u-.5)*Math.PI*.95); B.push([tx(x-r),ty(80-u*58),z,.95,0]); B.push([tx(x+r),ty(80-u*58),z,.95,0]);}
+    bal(B,x,80,50,26,z); tier(B,x,106,190,40,z,.95); for(let y=120;y<185;y+=20) Ar(B,x,y+8,5,9,Math.PI,TAU,z,.55);
+    bal(B,x,190,68,24,z); tier(B,x,214,300,44,z,.95);
+    for(let y=240;y<296;y+=9) for(let k=0;k<6;k++){const x0=x-22+k*7.3; L(B,x0,y,x0+3.6,y-6,z,.55,0,1.3); L(B,x0+3.6,y-6,x0+7.3,y,z,.55,0,1.3);}
+    bal(B,x,300,96,34,z); tier(B,x,334,500,62,z,.9); for(let y=360;y<490;y+=36) Rc(B,x-8,y,x+8,y+18,z,.45);}
+  // bronze lamp posts on the plaza (front layer); building points behind them are hidden
+  const HIDE=[];
+  const lamp=(x,top,s)=>{const z=.22, w=100*s, bot=705, H=bot-top, fy=f=>top+H*f;
+    L(LP,x,top,x,fy(.06),z,1,1,1); Ar(LP,x,top-3,3,3,0,TAU,z,1,1,1);
+    L(LP,x-w*.18,fy(.06),x,top+2,z,.9,1); L(LP,x+w*.18,fy(.06),x,top+2,z,.9,1);
+    L(LP,x-w*.55,fy(.15),x-w*.18,fy(.06),z,.95,1); L(LP,x+w*.55,fy(.15),x+w*.18,fy(.06),z,.95,1); L(LP,x-w*.55,fy(.15),x+w*.55,fy(.15),z,1,1);
+    Rc(LP,x-w*.5,fy(.15),x+w*.5,fy(.31),z,1,1); L(LP,x,fy(.15),x,fy(.31),z,.6,1); Fi(LP,x-w*.42,fy(.17),x+w*.42,fy(.29),3.2,z-.01,.3,3);
+    L(LP,x-w*.5,fy(.31),x-w*.3,fy(.4),z,.9,1); L(LP,x+w*.5,fy(.31),x+w*.3,fy(.4),z,.9,1); L(LP,x-w*.5,fy(.31),x+w*.5,fy(.31),z,1,1);
+    Rc(LP,x-w*.34,fy(.4),x+w*.34,fy(.5),z,.9,1); Fi(LP,x-w*.3,fy(.41),x+w*.3,fy(.49),3.6,z,.45,1);
+    L(LP,x-w*.25,fy(.5),x-w*.25,fy(.94),z,.9,1); L(LP,x+w*.25,fy(.5),x+w*.25,fy(.94),z,.9,1); Fi(LP,x-w*.2,fy(.52),x+w*.2,fy(.93),4.2,z-.01,.28,1);
+    Rc(LP,x-w*.48,fy(.94),x+w*.48,bot,z,.95,1);
+    HIDE.push([x-w*.56,top,x+w*.56,bot]);};
+  lamp(940,105,1); lamp(533,300,.78); lamp(318,395,.62); lamp(165,470,.42); lamp(80,520,.36); lamp(18,545,.32);
+  lamp(612,535,.3); lamp(755,535,.3); lamp(1090,505,.34);
+  const hidden=(X,Y)=>{const x=ix(X), y=iy(Y); return HIDE.some(([a,b,c2,d])=>x>a&&x<c2&&y>b&&y<d);};
+  const P=B.filter(p=>!hidden(p[0],p[1])).concat(LP);
+  L(P,0,705,1181,705,.12,.5);
   { const room=Math.round((N-N/8)*.86); place(F,P,Math.min(Math.round(P.length*Math.max(.5,PSC)),room)); }
-  F.ko=[{x0:UX(26),y0:UY(60),x1:UX(774),y1:UY(UG+8)}]; F.hudA=.4;
-  pickMarks(F,i=>F.y[i]>UY(UG-4)&&F.x[i]>UX(80)&&F.x[i]<UX(720),4);
+  F.ko=[{x0:UX(26),y0:UY(60),x1:UX(774),y1:UY(ty(705)+8)}]; F.hudA=.4;
+  pickMarks(F,i=>F.y[i]>UY(ty(700))&&F.x[i]>UX(80)&&F.x[i]<UX(720),4);
   return F;
 }
 
